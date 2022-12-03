@@ -7,7 +7,9 @@ const orders = require('./models/track');
 const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
-mongoose.connect('mongodb+srv://admin-om:bba_admin123@cluster0.9xjs3.mongodb.net/etrack?retryWrites=true&w=majority', { useNewUrlParser: true });
+mongoose.connect('mongodb+srv://admin-om:bba_admin123@cluster0.9xjs3.mongodb.net/etrack?retryWrites=true&w=majority', { useNewUrlParser: true })
+    .then(() => console.log('Connected to MongoDB...'))
+    .catch(err => console.error('Could not connect to MongoDB...'));
 
 // push route for pushing tracking_detauls to track collection using tracking id
 app.post('/track', async (req, res) => {
@@ -42,7 +44,9 @@ app.post('/track', async (req, res) => {
 })
 
 app.get('/track', async (req, res) => {
-    const trackingId = req.query.trackingId;
+    console.log('get request');
+    const { trackingId } = req.query;
+    console.log('trackingId', trackingId);
     const order =  await orders.findOne({trackingId});
     if (!order) {
         res.status(404).json({code: 404, msg: 'Order not found'});
